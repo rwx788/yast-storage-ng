@@ -88,9 +88,23 @@ module Y2Partitioner
         },
 
         {
+          fs:          %i(ext3 ext4),
+          widget:      :MkfsComboBox,
+          label:       _("&Inode Size"),
+          values:      %w(default 128 256 512 1024),
+          default:     "default",
+          mkfs_option: "-I",
+          # help text, richtext format
+          help:        _(
+            "<p><b>Inode Size:</b> " \
+            "This option specifies the inode size of the file system.</p>"
+          )
+        },
+
+        {
           fs:          %i(ext2 ext3 ext4),
           widget:      :MkfsCheckBox,
-          label:       _("&Disable Regular Checks"),
+          label:       _("Disable Regular &Checks"),
           default:     false,
           tune_option: "-c 0 -i 0",
           # help text, richtext format
@@ -98,7 +112,37 @@ module Y2Partitioner
             "<p><b>Disable Regular Checks:</b> " \
             "Disable regular file system check at booting.</p>"
           )
-        }
+        },
+
+        {
+          fs:          %i(ext3 ext4),
+          widget:      :MkfsCheckBox,
+          label:       _("&Directory Index Feature"),
+          default:     false,
+          mkfs_option: "-O dir_index",
+          # help text, richtext format
+          help:        _(
+            "<p><b>Directory Index:</b> " \
+            "Enables use of hashed b-trees to speed up lookups in large directories.</p>"
+          )
+        },
+
+        {
+          fs:          %i(ext4),
+          widget:      :MkfsCheckBox,
+          label:       _("&No Journal"),
+          default:     false,
+          mkfs_option: "-O ^has_journal",
+          # help text, richtext format
+          help:        _(
+            "<p><b>No Journal:</b> " \
+            "Suppressed use of journaling on filesystem. " \
+            "Only activate this when you really know what you are doing.</p>"
+          )
+        },
+
+
+
       ]
 
       def self.options_for(fs)

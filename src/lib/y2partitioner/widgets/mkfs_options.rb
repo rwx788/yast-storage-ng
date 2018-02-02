@@ -12,6 +12,7 @@ module Y2Partitioner
       def initialize(controller, opts)
         @controller = controller
         @opts = opts
+        self.widget_id = "#{self.class}_#{object_id}"
       end
 
       def label
@@ -130,7 +131,7 @@ module Y2Partitioner
           {
             fs:          %i(ext2 ext3 ext4),
             widget:      :MkfsCheckBox,
-            label:       _("Disable Regular Checks"),
+            label:       _("&Disable Regular Checks"),
             default:     false,
             tune_option: "-c 0 -i 0",
             # help text, richtext format
@@ -169,7 +170,8 @@ module Y2Partitioner
 
       def contents
         # FIXME: add some VSpacing(1)?
-        VBox(
+        # ???: contents is called 3 times for each dialog, so cache it
+        @contents ||= VBox(
           * @all_options.map do |w|
             Left(Widgets.const_get(w[:widget]).new(@controller, w)) if w[:fs].include?(fstype)
           end.compact

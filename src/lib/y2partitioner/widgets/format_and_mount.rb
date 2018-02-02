@@ -378,10 +378,15 @@ module Y2Partitioner
 
       # @macro seeAbstractWidget
       def handle
-        log.info("format options before dialog: mkfs='#{filesystem.mkfs_options}', tune='#{filesystem.tune_options}'")
+        log.info(
+          "format options before: [#{filesystem.type}] " \
+          "mkfs='#{filesystem.mkfs_options}', tune='#{filesystem.tune_options}'"
+        )
         Dialogs::MkfsOptions.new(@controller).run
-        log.info("format options ater dialog: mkfs='#{filesystem.mkfs_options}', tune='#{filesystem.tune_options}'")
-
+        log.info(
+          "format options after: [#{filesystem.type}] " \
+          "mkfs='#{filesystem.mkfs_options}', tune='#{filesystem.tune_options}'"
+        )
         nil
       end
     end

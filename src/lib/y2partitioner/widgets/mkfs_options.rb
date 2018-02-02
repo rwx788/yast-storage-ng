@@ -21,7 +21,7 @@ module Y2Partitioner
       end
 
       def help
-        "<p><b>#{@opts[:label].gsub(/&/,"")}:</b>#{@opts[:help]}</p>"
+        "<p><b>#{@opts[:label].delete("&")}</b><br/>#{@opts[:help]}</p>"
       end
 
       def init

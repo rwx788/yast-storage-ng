@@ -245,7 +245,8 @@ module Y2Partitioner
         }
       ]
 
-      def self.options_for(fs)
+      def self.options_for(filesystem)
+        fs = filesystem.type.to_sym
         FOO.find_all { |x| x[:fs].include?(fs) }
       end
     end

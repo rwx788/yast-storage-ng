@@ -73,7 +73,7 @@ module Y2Partitioner
         # FIXME: add some VSpacing(1)?
         # ???: contents is called 3 times for each dialog, so cache it
         @contents ||= VBox(
-          * MkfsOptiondata.options_for(fstype).map do |w|
+          * MkfsOptiondata.options_for(filesystem).map do |w|
             Left(Widgets.const_get(w[:widget]).new(@controller, w))
           end
         )
@@ -138,8 +138,8 @@ module Y2Partitioner
 
     private
 
-      def fstype
-        @controller.filesystem.type.to_sym
+      def filesystem
+        @controller.filesystem
       end
     end
 

@@ -524,7 +524,7 @@ describe Y2Storage::AutoinstProposal do
         end
       end
 
-      let(:planned_root) { planned_partition(mount_point: "/", type: :ext4) }
+      let(:planned_root) { planned_partition(mount_point: "/", type: :ext4, size: 1.GiB) }
 
       let(:planner) do
         instance_double(Y2Storage::Proposal::DevicesPlanner, planned_devices: [planned_root])
@@ -560,25 +560,39 @@ describe Y2Storage::AutoinstProposal do
         end
       end
 
-      context "when snapshots are disabled in the profile" do
+      context "when enable_snapshots element is set" do
         let(:partitioning) do
-          [{ "device" => "/dev/sda", "use" => use, "enable_snapshots" => false }]
+          [{ "device" => "/dev/sda", "use" => use, "enable_snapshots" => enable_snapshots }]
         end
 
-        it "disables use_snapshots setting" do
-          expect(settings).to receive(:use_snapshots=).with(false)
-          proposal.propose
-        end
-      end
-
-      context "when snapshots are enabled in the profile" do
-        let(:partitioning) do
-          [{ "device" => "/dev/sda", "use" => use, "enable_snapshots" => true }]
+        let(:devices_planner) do
+          double(Y2Storage::Proposal::DevicesPlanner, planned_devices: [])
         end
 
-        it "enables use_snapshots setting" do
-          expect(settings).to receive(:use_snapshots=).with(true)
-          proposal.propose
+        context "and snapshots are disabled" do
+          let(:enable_snapshots) { false }
+
+          it "disables snapshots for root" do
+            expect(Y2Storage::Proposal::DevicesPlanner).to receive(:new) do |settings|
+              root_volume = settings.volumes.find { |v| v.mount_point == "/" }
+              expect(root_volume.snapshots).to eq(false)
+              devices_planner
+            end
+            proposal.propose
+          end
+        end
+
+        context "and snapshots are enabled" do
+          let(:enable_snapshots) { true }
+
+          it "enables snapshots for root" do
+            expect(Y2Storage::Proposal::DevicesPlanner).to receive(:new) do |settings|
+              root_volume = settings.volumes.find { |v| v.mount_point == "/" }
+              expect(root_volume.snapshots).to eq(true)
+              devices_planner
+            end
+            proposal.propose
+          end
         end
       end
     end

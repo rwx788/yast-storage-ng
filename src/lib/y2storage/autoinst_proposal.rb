@@ -295,7 +295,8 @@ module Y2Storage
     # @see Y2Storage::BlkDevice#name
     def proposal_settings_for_disks(drives)
       settings = ProposalSettings.new_for_current_product
-      settings.use_snapshots = drives.use_snapshots?
+      root_volume = settings.volumes.find { |v| v.mount_point == "/" }
+      root_volume.snapshots = drives.use_snapshots? if root_volume
       settings.candidate_devices = drives.disk_names
       settings
     end
